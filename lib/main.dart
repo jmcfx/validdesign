@@ -28,6 +28,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_back)),
         title: const Text("HomePage"),
       ),
       body: FutureBuilder(
