@@ -45,16 +45,19 @@ class HomePage extends StatelessWidget {
           //snapshot.connectionState is mainly For internet connection......
           switch (snapshot.connectionState) {
             case ConnectionState.done:
-            // final user = FirebaseAuth.instance.currentUser;
-            // if (user?.emailVerified ?? false) {
-            //   print(user);
-            //   // It returns Done if Users Email is Verified......
-            //   return const Text("Done");
-            // } else {
-            //   // It returns The VerifyEmail Stateless Widget, if Users isn't verified.....
-            //   return const VerifyEmail();
-            // }
-              return const LoginView();
+              final user = FirebaseAuth.instance.currentUser;
+              if (user != null) {
+                if (user.emailVerified) {
+                //It returns the Dashboard if user Email is verified....
+                  return const Dashboard();
+                } else {
+                  //It returns The verify Email view if user isn't verified.....
+                  return const VerifyEmail();
+                }
+              } else {
+                // It displays the Login_view if user doesn't Have isn't Logged In
+                return const LoginView();
+              }
             default:
               // The HomePage displays a "CircularProgressIndicator" by Default if The Network is bad......
               return Center(
@@ -72,6 +75,22 @@ class HomePage extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+}
+
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Welcome")),
     );
   }
 }
