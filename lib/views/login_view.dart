@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import '../firebase_options.dart';
 
-//HomePage extend the Stateless Widget..
+//Login View extend the Stateless Widget..
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -12,14 +10,14 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  //TextField Controller ......
   late final TextEditingController _email;
   late final TextEditingController _password;
-
+//The essence of the initState method is to initialize stateful properties that are needed by the widget and to perform any other setup that needs to be done before the widget is rendered.
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
-
     super.initState();
   }
 
@@ -34,71 +32,65 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
-        leading: const Icon(Icons.access_alarm_outlined),
-        title: const Text("Register"),
+        title: const Text("Login"),
       ),
-      body: FutureBuilder(
-        // initializing Firebase.......
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          //snapshot is The result of The Future which is the FireBase App....
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              return Column(
-                children: [
-                  //Email TextField Input Type......
-                  TextField(
-                    controller: _email,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                        hintText: "Enter your email here"),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  // Password TextField input Type....
-                  TextField(
-                    controller: _password,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                        hintText: "Enter your password here"),
-                  ),
-                  TextButton(
-                    //OnPressed is an Async Task That Stores User Email and Password Detail to FireBase.....
-                    onPressed: () async {
-                      //email = _email && password = _password.....
-                      final email = _email.text, password = _password.text;
-                      // Using The try Catch Block to handle Firebase Exception....
-                      try {
-                        //await FirebaseAuth Instance For Creating  Email and Password.......
-                        final userCredential = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                                email: email, password: password);
-                      }
-                      // Catch FirebaseAuthException Error
-                      on FirebaseAuthException catch (error) {
-                        if (error.code == true) {
-                          print(error.code);
-                        } else {
-                          print(error.code);
-                        }
-                      }
-                    },
-                    child: const Text("Login"),
-                  ),
-                ],
-              );
-            default:
-              return const Text("Loading...");
-          }
-        },
+      body: Column(
+        children: [
+          //Email Text Field ......
+          TextField(
+            controller: _email,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration:
+                const InputDecoration(hintText: "Enter your email here"),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          // Password TextField input Type....
+          TextField(
+            controller: _password,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration:
+                const InputDecoration(hintText: "Enter your password here"),
+          ),
+          TextButton(
+            //OnPressed is an Async Task That Stores User Email and Password Detail to FireBase.....
+            onPressed: () async {
+              //email = _email && password = _password.....
+              final email = _email.text, password = _password.text;
+              // Using The try Catch Block to handle Firebase Exception....
+              try {
+                //await FirebaseAuth Instance For Creating  Email and Password.......
+                final userCredential = await FirebaseAuth.instance
+                    .signInWithEmailAndPassword(
+                        email: email, password: password);
+                print(userCredential);
+              }
+              // Catch FirebaseAuthException Error
+              on FirebaseAuthException catch (error) {
+                if (error.code == true) {
+                  print(error.code);
+                } else {
+                  print(error.code);
+                }
+              }
+            },
+            child: const Text("Login"),
+          ),
+          // Not registered TextButton ...
+          TextButton(
+            onPressed: () {
+              //Named route to Register View....
+              Navigator.of(context)
+                  .pushNamedAndRemoveUntil("/register/", (route) => false);
+            },
+            child: const Text("Not registered yet? register here"),
+          ),
+        ],
       ),
     );
   }
