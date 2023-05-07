@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:validdesign/views/login_view.dart';
 import 'package:validdesign/views/register_view.dart';
 import 'package:validdesign/views/verifyemail_view.dart';
-
+import 'dart:developer' as devtools show log;
 import 'firebase_options.dart';
 
 void main() {
@@ -21,8 +21,10 @@ void main() {
       home: const HomePage(),
       //Creating a named route For Users LoginView Page and Register View Page.......
       routes: {
+        //route is a Map The has a String as its Key Then a function As its value......
         "/login/": (context) => const LoginView(),
         "/register/": (context) => const RegisterView(),
+        "/dashboard/": (context) => const DashboardView(),
       },
     ),
   );
@@ -48,14 +50,11 @@ class HomePage extends StatelessWidget {
               final user = FirebaseAuth.instance.currentUser;
               if (user != null) {
                 if (user.emailVerified) {
-                //It returns the Dashboard if user Email is verified....
-                  return const Dashboard();
+                  return const DashboardView();
                 } else {
-                  //It returns The verify Email view if user isn't verified.....
                   return const VerifyEmail();
                 }
               } else {
-                // It displays the Login_view if user doesn't Have isn't Logged In
                 return const LoginView();
               }
             default:
@@ -79,18 +78,93 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+//  Enumeration That Defines The PopUp Menu Items ......
+enum MenuAction { logout }
+
+class DashboardView extends StatefulWidget {
+  const DashboardView({super.key});
 
   @override
-  State<Dashboard> createState() => _DashboardState();
+  State<DashboardView> createState() => _DashboardViewState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Welcome")),
+      bottomNavigationBar: BottomAppBar(
+        padding: const EdgeInsets.all(1.0),
+        color: Colors.indigo,
+        child: Padding(
+          padding: const EdgeInsets.all(0.8),
+          child: Row(
+            children: const [],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        title: const Text("Welcome"),
+        actions: <Widget>[
+          //We Specified The Value Type <MenuAction> Which The PopupMenuButton will be managing|| MenuAction is an Enum......
+          PopupMenuButton<MenuAction>(
+            //The itemBuilder function is called to create the initial set of menu items
+            itemBuilder: (context) {
+              return const [
+                PopupMenuItem<MenuAction>(
+                  // The value is passed to onSelected...
+                  value: MenuAction.logout,
+                  child: Text("logout"),
+                ),
+              ];
+            },
+            //We Specified the onSelected Should Take Only The values that's associated With The MenuAction Enum....
+            onSelected: (MenuAction value) async {
+              switch (value) {
+                case MenuAction.logout:
+                  final shouldLogOut = await showLogOutDialog(context);
+                  if (shouldLogOut) {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushNamedAndRemoveUntil("/login/", (_) => false);
+                  }
+                  devtools.log(shouldLogOut.toString());
+                  break;
+              }
+            },
+          )
+        ],
+      ),
+      body: const Text(""),
+      drawer: const Drawer(),
     );
   }
+}
+
+Future<bool> showLogOutDialog(BuildContext context) {
+  //The showDialog is a function that returns a Future with an Optional Value so value can be null...
+  return showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Sign Out Here"),
+        content: const Text("Are you sure you want to Logout "),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: const Text("Logout"),
+          ),
+        ],
+      );
+    },
+  ).then((value) {
+    devtools.log(value.toString());
+    return value ?? false;
+  });
 }

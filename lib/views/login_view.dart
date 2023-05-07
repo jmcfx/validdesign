@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:validdesign/main.dart';
 
 //Login View extend the Stateless Widget..
 class LoginView extends StatefulWidget {
@@ -58,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
                 const InputDecoration(hintText: "Enter your password here"),
           ),
           TextButton(
-            //OnPressed is an Async Task That Stores User Email and Password Detail to FireBase.....
+            //OnPressed Performs an Async Task That Stores User Email and Password Detail to FireBase.....
             onPressed: () async {
               //email = _email && password = _password.....
               final email = _email.text, password = _password.text;
@@ -68,6 +69,8 @@ class _LoginViewState extends State<LoginView> {
                 final userCredential = await FirebaseAuth.instance
                     .signInWithEmailAndPassword(
                         email: email, password: password);
+                        Navigator.of(context).pushNamedAndRemoveUntil("/dashboard/", (route) => false);
+
                 print(userCredential);
               }
               // Catch FirebaseAuthException Error
@@ -84,7 +87,7 @@ class _LoginViewState extends State<LoginView> {
           // Not registered TextButton ...
           TextButton(
             onPressed: () {
-              //Named route to Register View....
+              //Clicking This Button Takes you to the Register View Page|| Named route to Register View Page ....
               Navigator.of(context)
                   .pushNamedAndRemoveUntil("/register/", (route) => false);
             },
