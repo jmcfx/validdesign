@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:validdesign/main.dart';
+import 'dart:developer' as devtools show log;
 
 //Login View extend the Stateless Widget..
 class LoginView extends StatefulWidget {
@@ -59,26 +59,28 @@ class _LoginViewState extends State<LoginView> {
                 const InputDecoration(hintText: "Enter your password here"),
           ),
           TextButton(
-            //OnPressed Performs an Async Task That Stores User Email and Password Detail to FireBase.....
             onPressed: () async {
-              //email = _email && password = _password.....
               final email = _email.text, password = _password.text;
               // Using The try Catch Block to handle Firebase Exception....
               try {
                 //await FirebaseAuth Instance For Creating  Email and Password.......
-                final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
-                        Navigator.of(context).pushNamedAndRemoveUntil("/dashboard/", (route) => false);
-
-                print(userCredential);
+                final userCredential =
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
+                //route to the welcome screen.....
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil("/dashboard/", (route) => false);
+                devtools.log(userCredential.toString());
               }
               // Catch FirebaseAuthException Error
-              on FirebaseAuthException catch (error) {
-                if (error.code == true) {
-                  print(error.code);
-                } else {
-                  print(error.code);
+              on FirebaseAuthException catch (e) {
+                devtools.log(e.code.toString());
+                if (e.code == "user-not-found") {
+                  devtools.log("user-not-found");
+                } else if (e.code == "wrong-password") {
+                  devtools.log("wrong-password");
                 }
               }
             },

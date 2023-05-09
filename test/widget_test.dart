@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:validdesign/views/login_view.dart';
 import 'package:validdesign/main.dart';
 
 void main() {

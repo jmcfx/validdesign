@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:validdesign/views/login_view.dart';
 import 'package:validdesign/views/register_view.dart';
 import 'package:validdesign/views/verifyemail_view.dart';
-import 'dart:developer' as devtools show log;
+import 'dart:developer' as devtools show log ;
+
 import 'firebase_options.dart';
 
 void main() {
@@ -19,7 +20,7 @@ void main() {
       ),
       //Home Page is a Stateless Widget Constructor....
       home: const HomePage(),
-      //Creating a named route For Users LoginView Page and Register View Page.......
+      //Creating a named route...
       routes: {
         //route is a Map The has a String as its Key Then a function As its value......
         "/login/": (context) => const LoginView(),
@@ -124,7 +125,8 @@ class _DashboardViewState extends State<DashboardView> {
                   final shouldLogOut = await showLogOutDialog(context);
                   if (shouldLogOut) {
                     await FirebaseAuth.instance.signOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil("/login/", (_) => false);
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil("/login/", (_) => false);
                   }
                   devtools.log(shouldLogOut.toString());
                   break;
