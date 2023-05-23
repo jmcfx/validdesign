@@ -3,10 +3,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:validdesign/constants/routes.dart';
 import 'package:validdesign/views/login_view.dart';
 import 'package:validdesign/views/register_view.dart';
 import 'package:validdesign/views/verifyemail_view.dart';
-import 'dart:developer' as devtools show log ;
+import 'dart:developer' as devtools show log ;// it's a Default package used to Print Whatever your code returns... 
 
 import 'firebase_options.dart';
 
@@ -23,9 +24,9 @@ void main() {
       //Creating a named route...
       routes: {
         //route is a Map The has a String as its Key Then a function As its value......
-        "/login/": (context) => const LoginView(),
-        "/register/": (context) => const RegisterView(),
-        "/dashboard/": (context) => const DashboardView(),
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        dashboardRoute: (context) => const DashboardView(),
       },
     ),
   );

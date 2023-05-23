@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:validdesign/constants/routes.dart';
+
 //Login View extend the Stateless Widget..
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -71,7 +73,7 @@ class _LoginViewState extends State<LoginView> {
                 );
                 //route to the welcome screen.....
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil("/dashboard/", (route) => false);
+                    .pushNamedAndRemoveUntil(dashboardRoute ,(route) => false);
                 devtools.log(userCredential.toString());
               }
               // Catch FirebaseAuthException Error
@@ -91,8 +93,9 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () {
               //Clicking This Button Takes you to the Register View Page|| Named route to Register View Page ....
               Navigator.of(context)
-                  .pushNamedAndRemoveUntil("/register/", (route) => false);
+                  .pushNamedAndRemoveUntil(registerRoute, (route) => false);
             },
+            
             child: const Text("Not registered yet? register here"),
           ),
         ],
