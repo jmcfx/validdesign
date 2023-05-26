@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
-
 import 'package:validdesign/constants/routes.dart';
+import '../showDialog/error_dialog.dart';
 
 //Login View extend the Stateless Widget..
 class LoginView extends StatefulWidget {
@@ -73,17 +73,23 @@ class _LoginViewState extends State<LoginView> {
                 );
                 //route to the welcome screen.....
                 Navigator.of(context)
-                    .pushNamedAndRemoveUntil(dashboardRoute ,(route) => false);
-                devtools.log(userCredential.toString());
+                    .pushNamedAndRemoveUntil(dashboardRoute, (route) => false);
               }
-              // Catch FirebaseAuthException Error
+              //  Catch FirebaseAuthException Error
               on FirebaseAuthException catch (e) {
                 devtools.log(e.code.toString());
                 if (e.code == "user-not-found") {
-                  devtools.log("user-not-found");
+                  await showErrorDialog(context, "user-not-found");
                 } else if (e.code == "wrong-password") {
-                  devtools.log("wrong-password");
+                  await showErrorDialog(context, "wrong-password");
+                } else {
+                  await showErrorDialog(context, "Error : ${e.code}");
                 }
+              
+              }
+              //Catch any other Exception That is FireBaseAuthException.... 
+              catch (e) {
+                await showErrorDialog(context, e.toString());
               }
             },
             child: const Text("Login"),
@@ -95,7 +101,6 @@ class _LoginViewState extends State<LoginView> {
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(registerRoute, (route) => false);
             },
-            
             child: const Text("Not registered yet? register here"),
           ),
         ],

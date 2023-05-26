@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:validdesign/constants/routes.dart';
+import 'package:validdesign/showDialog/alert_dialog.dart';
 import 'package:validdesign/views/login_view.dart';
 import 'package:validdesign/views/register_view.dart';
 import 'package:validdesign/views/verifyemail_view.dart';
 import 'dart:developer' as devtools show log ;// it's a Default package used to Print Whatever your code returns... 
-
 import 'firebase_options.dart';
 
 void main() {
@@ -121,13 +121,13 @@ class _DashboardViewState extends State<DashboardView> {
             },
             //We Specified the onSelected Should Take Only The values that's associated With The MenuAction Enum....
             onSelected: (MenuAction value) async {
-              switch (value) {
+              switch ( value) {
                 case MenuAction.logout:
                   final shouldLogOut = await showLogOutDialog(context);
                   if (shouldLogOut) {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context)
-                        .pushNamedAndRemoveUntil("/login/", (_) => false);
+                        .pushNamedAndRemoveUntil(loginRoute, (_) => false);
                   }
                   devtools.log(shouldLogOut.toString());
                   break;
@@ -140,34 +140,4 @@ class _DashboardViewState extends State<DashboardView> {
       drawer: const Drawer(),
     );
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  //The showDialog is a function that returns a Future with an Optional Value so value can be null...
-  return showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Sign Out Here"),
-        content: const Text("Are you sure you want to Logout "),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: const Text("Logout"),
-          ),
-        ],
-      );
-    },
-  ).then((value) {
-    devtools.log(value.toString());
-    return value ?? false;
-  });
 }
